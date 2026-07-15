@@ -12,7 +12,7 @@ Give every agent clear title to act: make intent, evidence, authority, exception
 - `resume.html` - role-aligned two-page resume
 - `cover-letter.html` - one-page cover letter
 - `interview-brief.html` - three-page interview thesis brief
-- `90-day-plan.html` - two-page first-90-day plan
+- `90-day-plan.html` - three-page first-90-day plan and review
 - `agent-title-review.html` - one-page role-specific worksheet
 
 ## Downloads
