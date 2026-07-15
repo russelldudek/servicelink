@@ -41,6 +41,32 @@
   border-left: 3px solid var(--sl-blue);
 }
 
+/* Give the evidence timeline its own gutter and mask the rail behind each node. */
+.evidence-trail::before {
+  left: 148px;
+  z-index: 0;
+}
+
+.evidence-item {
+  grid-template-columns: 108px 1fr;
+  column-gap: 5rem;
+  z-index: 1;
+}
+
+.evidence-year {
+  padding-right: .25rem;
+}
+
+.evidence-copy {
+  padding-left: 1.5rem;
+}
+
+.evidence-copy::before {
+  left: -3.05rem;
+  z-index: 2;
+  box-shadow: 0 0 0 6px #f7fbfe;
+}
+
 @media (max-width: 900px) {
   .title-scene {
     min-height: auto;
@@ -81,5 +107,23 @@
 
   .scene-caption {
     width: 92%;
+  }
+
+  .evidence-trail::before {
+    left: 14px;
+  }
+
+  .evidence-item {
+    grid-template-columns: 1fr;
+    gap: .3rem;
+    padding-left: 3.25rem;
+  }
+
+  .evidence-copy {
+    padding-left: 0;
+  }
+
+  .evidence-copy::before {
+    left: -2.94rem;
   }
 }
