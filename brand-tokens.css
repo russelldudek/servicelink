@@ -1,0 +1,14 @@
+:root {
+  --sl-navy: #15224f;
+  --sl-blue: #0876ce;
+  --sl-sky: #2da6d8;
+  --sl-pale: #eef6fc;
+  --sl-ink: #151a28;
+  --sl-muted: #5e6677;
+  --sl-line: #cbd9e6;
+  --sl-white: #ffffff;
+  --campaign-amber: #f2a23a;
+  --campaign-green: #1f8b70;
+  --campaign-red: #b94453;
+  --shadow-soft: 0 18px 60px rgba(21, 34, 79, 0.12);
+}
