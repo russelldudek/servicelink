@@ -1,0 +1,109 @@
+name: Verify live 90-day plan
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/check-live-plan.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-live-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install PDF verifier
+        run: python -m pip install --disable-pip-version-check 'pypdf==6.4.0'
+
+      - name: Wait for the expected live plan
+        id: verify
+        shell: bash
+        run: |
+          expected='20260715-5'
+          base='https://russelldudek.github.io/servicelink'
+          html_live=false
+          controls_live=false
+          pdf_live=false
+          pdf_pages=0
+          attempts=0
+
+          for i in $(seq 1 24); do
+            attempts="$i"
+            stamp="${GITHUB_RUN_ID}-${i}-$(date +%s)"
+            html="$(curl -fsSL --retry 2 --connect-timeout 10 "${base}/90-day-plan.html?check=${stamp}" 2>/dev/null || true)"
+
+            if printf '%s' "$html" | grep -q "name=\"roleforge-build\" content=\"${expected}\"" \
+              && printf '%s' "$html" | grep -q "plan.css?v=${expected}" \
+              && [ "$(printf '%s' "$html" | grep -o 'document-sheet plan-sheet' | wc -l | tr -d ' ')" = '3' ]; then
+              html_live=true
+            fi
+
+            if [ "$html_live" = true ] \
+              && ! printf '%s' "$html" | grep -q 'window.print' \
+              && [ "$(printf '%s' "$html" | grep -o '>Download PDF<' | wc -l | tr -d ' ')" = '1' ]; then
+              controls_live=true
+            fi
+
+            if curl -fsSL --retry 2 --connect-timeout 10 "${base}/docs/ServiceLink-Senior-Product-Designer-AI-90-Day-Plan.pdf?check=${stamp}" -o /tmp/plan.pdf; then
+              pdf_pages="$(python - <<'PY'
+          from pypdf import PdfReader
+          print(len(PdfReader('/tmp/plan.pdf').pages))
+          PY
+              )"
+              if [ "$pdf_pages" = '3' ]; then
+                pdf_live=true
+              fi
+            fi
+
+            if [ "$html_live" = true ] && [ "$controls_live" = true ] && [ "$pdf_live" = true ]; then
+              break
+            fi
+            sleep 15
+          done
+
+          HTML_LIVE="$html_live" CONTROLS_LIVE="$controls_live" PDF_LIVE="$pdf_live" PDF_PAGES="$pdf_pages" ATTEMPTS="$attempts" python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          def flag(name: str) -> bool:
+              return os.environ.get(name, '').lower() == 'true'
+
+          status = {
+              'url': 'https://russelldudek.github.io/servicelink/90-day-plan.html',
+              'expected_build': '20260715-5',
+              'html_build_live': flag('HTML_LIVE'),
+              'download_only_controls_live': flag('CONTROLS_LIVE'),
+              'pdf_live': flag('PDF_LIVE'),
+              'pdf_pages': int(os.environ.get('PDF_PAGES') or 0),
+              'attempts': int(os.environ.get('ATTEMPTS') or 0),
+          }
+          Path('live-plan-status.json').write_text(json.dumps(status, indent=2) + '\n', encoding='utf-8')
+          PY
+
+          if [ "$html_live" != true ] || [ "$controls_live" != true ] || [ "$pdf_live" != true ]; then
+            echo 'The expected live 90-day plan did not fully verify.' >&2
+            exit 1
+          fi
+
+      - name: Commit live verification
+        if: always()
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add live-plan-status.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'Record live 90-day plan verification [skip ci]'
+          git push origin HEAD:main
