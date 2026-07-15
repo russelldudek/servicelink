@@ -1,6 +1,6 @@
 # Campaign Audit
 
-Campaign state: repository-complete; live hosting remains blocked by GitHub Pages activation permissions
+Campaign state: complete; current candidate site and corrected first-90-day plan are live
 
 ## Repository and validation results
 
@@ -10,7 +10,7 @@ Campaign state: repository-complete; live hosting remains blocked by GitHub Page
 - Color token provenance: passed
 - Typography decision: passed
 - Document brand continuity: passed
-- Visual experience: passed after user-identified hero overlap correction
+- Visual experience: passed after user-identified hero and evidence-timeline corrections
 - Role-derived motion: passed
 - Meaningful interaction: passed; four scenarios, reset behavior and `aria-pressed` state verified
 - UX psychology: passed
@@ -21,16 +21,19 @@ Campaign state: repository-complete; live hosting remains blocked by GitHub Page
 - Dark-pattern review: passed
 - Hero overlap regression: passed in headless Chromium at 1280x800, 968x1180 and 390x844
 - Hero geometry checks: zero seal/Recovery-row intersection, zero caption/document intersection, zero caption/next-section intersection and zero horizontal overflow
+- Evidence-timeline gutter: passed with the rail masked behind each node and separated from labels and copy
 - Reduced motion: passed at source level
 - Resume pagination: passed; exactly two US Letter pages
 - Cover-letter pagination: passed; exactly one US Letter page
-- Other PDFs: passed; interview brief three pages, 90-day plan and review three pages, Agent Title Review one page
+- Other PDFs: passed; interview brief three pages, first-90-day plan three pages, Agent Title Review one page
+- First-90-day plan legibility: passed with dedicated phase-page typography, minimum rendered main text above the automated threshold and no print-sheet overflow
+- Document controls: passed; each printable route provides one Download PDF action and no redundant Print control
 - Reciprocal resume and cover-letter navigation: passed at source level
 - Candidate contact information: passed in HTML and extracted PDF text
-- Candidate-facing confidentiality: passed in source, filenames, PDF text and PDF metadata
+- Candidate-facing confidentiality: passed in current candidate-facing source, filenames, PDF text and PDF metadata
 - Forbidden internal-name matches: 0
-- Regenerated PDF commit: present on `main`
+- Regenerated PDFs: present on `main`
 
-## Remaining publication gate
+## Publication evidence
 
-The GitHub Actions token successfully generated the PDFs, ran the browser geometry tests and committed the validated documents. The subsequent API request to activate workflow-based GitHub Pages was denied by the available repository permission, so no live URL is claimed. GitHub Pages must be enabled with repository-level administrative access, after which the live site, interaction, reciprocal links and PDF downloads should receive a final published-route check.
+GitHub Pages is active. The live homepage previously passed build-marker verification, and the latest first-90-day-plan release passed an external live check for the corrected HTML build, download-only controls, a reachable PDF and exactly three PDF pages. The published plan correction was verified on its first polling attempt.
