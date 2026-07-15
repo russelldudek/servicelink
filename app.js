@@ -1,3 +1,8 @@
+const heroFixes = document.createElement('link');
+heroFixes.rel = 'stylesheet';
+heroFixes.href = 'hero-fixes.css';
+document.head.append(heroFixes);
+
 const scene = document.querySelector('.title-scene');
 if (scene) {
   const align = () => scene.classList.add('is-aligned');
