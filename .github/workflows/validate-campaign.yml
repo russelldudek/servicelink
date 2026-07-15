@@ -35,10 +35,11 @@ jobs:
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
 
-      - name: Verify hero layout boundaries
+      - name: Verify rendered layout boundaries
         shell: bash
         run: |
           python -m http.server 4173 >/tmp/servicelink-server.log 2>&1 &
           server_pid=$!
           trap 'kill ${server_pid}' EXIT
           node scripts/check_hero_layout.mjs
+          node scripts/check_document_layout.mjs
