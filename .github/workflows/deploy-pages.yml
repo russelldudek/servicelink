@@ -1,4 +1,4 @@
-name: Deploy candidate vision
+name: Validate and deploy candidate vision
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -25,6 +25,48 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Generate and validate PDFs
+        run: |
+          python -m pip install --disable-pip-version-check "weasyprint==68.0" "pypdf==6.4.0"
+          python scripts/generate_pdfs.py
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install browser test dependency
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Verify hero layout boundaries
+        shell: bash
+        run: |
+          python -m http.server 4173 >/tmp/servicelink-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill ${server_pid}' EXIT
+          node scripts/check_hero_layout.mjs
+
+      - name: Commit regenerated PDFs
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          if git diff --cached --quiet; then
+            echo "PDFs already match validated sources."
+          else
+            git commit -m "Regenerate validated candidate PDFs [skip ci]"
+            git push origin HEAD:main
+          fi
 
       - name: Enable workflow-based Pages
         env:
