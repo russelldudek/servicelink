@@ -84,12 +84,12 @@ try {
     `90-day page labels are incorrect: ${plan.pageLabels.join(' | ')}`
   );
   assert(
-    plan.minMainFontPx >= 9.5,
-    `90-day plan main text is too small: minimum ${plan.minMainFontPx}px; expected at least 9.5px.`
+    plan.minMainFontPx >= 11,
+    `90-day plan main text is too small: minimum ${plan.minMainFontPx}px; expected at least 11px.`
   );
   assert(
-    plan.minContactFontPx >= 8.2,
-    `90-day plan contact text is too small: minimum ${plan.minContactFontPx}px; expected at least 8.2px.`
+    plan.minContactFontPx >= 9,
+    `90-day plan contact text is too small: minimum ${plan.minContactFontPx}px; expected at least 9px.`
   );
   const overflowing = plan.overflow.filter((item) => item.overflowPx > 2);
   assert(
