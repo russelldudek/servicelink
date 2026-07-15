@@ -1,0 +1,123 @@
+.document-sheet.plan-sheet {
+  padding: .48in .55in;
+}
+
+.plan-sheet .document-header {
+  padding-top: .18in;
+  padding-bottom: .15in;
+  margin-bottom: .18in;
+}
+
+.plan-sheet .document-name {
+  font-size: 24px;
+}
+
+.plan-sheet .document-identity {
+  font-size: 11.5px;
+}
+
+.plan-sheet .document-contact {
+  font-size: 9.5px;
+  line-height: 1.5;
+}
+
+.plan-sheet .doc-company {
+  font-size: 9px;
+}
+
+.plan-sheet h1 {
+  font-size: 25px;
+  line-height: 1.08;
+  margin: 0 0 11px;
+}
+
+.plan-sheet h2 {
+  font-size: 14px;
+  line-height: 1.2;
+  margin: 15px 0 7px;
+  padding-bottom: 4px;
+}
+
+.plan-sheet > p,
+.plan-sheet li {
+  font-size: 12.5px;
+  line-height: 1.42;
+}
+
+.plan-sheet > p {
+  margin: 0 0 10px;
+}
+
+.plan-sheet ul {
+  margin: 6px 0 10px;
+  padding-left: 19px;
+}
+
+.plan-sheet li {
+  margin-bottom: 4px;
+}
+
+.plan-sheet .timeline-table {
+  font-size: 11.75px;
+  line-height: 1.36;
+}
+
+.plan-sheet .timeline-table td {
+  padding: 8px 5px;
+}
+
+.plan-sheet .timeline-table td:first-child {
+  width: 74px;
+  padding-right: 10px;
+}
+
+.plan-sheet .metric-table {
+  font-size: 11.25px;
+  line-height: 1.32;
+}
+
+.plan-sheet .metric-table th,
+.plan-sheet .metric-table td {
+  padding: 6px;
+}
+
+.plan-sheet .callout {
+  padding: 10px 12px;
+  font-size: 11.75px;
+  line-height: 1.38;
+}
+
+.plan-sheet .review-summary {
+  font-size: 11.75px;
+  line-height: 1.4;
+  margin: 0 0 10px;
+  padding-right: 0;
+}
+
+.plan-sheet .page-number {
+  font-size: 8.5px;
+}
+
+@media screen and (max-width: 680px) {
+  .document-sheet.plan-sheet {
+    padding: 1.25rem;
+  }
+
+  .plan-sheet .timeline-table,
+  .plan-sheet .metric-table {
+    font-size: 1rem;
+  }
+
+  .plan-sheet > p,
+  .plan-sheet li,
+  .plan-sheet .callout,
+  .plan-sheet .review-summary {
+    font-size: 1rem;
+  }
+}
+
+@media print {
+  .document-sheet.plan-sheet {
+    padding: .48in .55in;
+  }
+}
