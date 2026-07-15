@@ -16,7 +16,7 @@ ARTIFACTS: Final[tuple[tuple[str, str, int], ...]] = (
     ("resume.html", "Russell-Dudek-ServiceLink-Resume.pdf", 2),
     ("cover-letter.html", "Russell-Dudek-ServiceLink-Cover-Letter.pdf", 1),
     ("interview-brief.html", "ServiceLink-AI-Product-Design-Interview-Brief.pdf", 3),
-    ("90-day-plan.html", "ServiceLink-Senior-Product-Designer-AI-90-Day-Plan.pdf", 2),
+    ("90-day-plan.html", "ServiceLink-Senior-Product-Designer-AI-90-Day-Plan.pdf", 3),
     ("agent-title-review.html", "ServiceLink-Agent-Title-Review.pdf", 1),
 )
 
