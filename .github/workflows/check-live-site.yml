@@ -1,0 +1,66 @@
+name: Verify Live GitHub Pages
+
+on:
+  push:
+    paths:
+      - '.github/workflows/check-live-site.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-live-site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for expected live build
+        id: verify
+        shell: bash
+        run: |
+          expected="20260715-4"
+          base="https://russelldudek.github.io/servicelink"
+          live=false
+          index_live=false
+          attempts=0
+          last_version_body=""
+          last_index_body=""
+
+          for i in $(seq 1 24); do
+            attempts="$i"
+            stamp="${GITHUB_RUN_ID}-${i}-$(date +%s)"
+            last_version_body="$(curl -fsSL --retry 2 --connect-timeout 10 "${base}/site-version.json?check=${stamp}" 2>/dev/null || true)"
+            last_index_body="$(curl -fsSL --retry 2 --connect-timeout 10 "${base}/?check=${stamp}" 2>/dev/null || true)"
+
+            if printf '%s' "$last_version_body" | grep -q '"build": "20260715-4"'; then
+              live=true
+            fi
+            if printf '%s' "$last_index_body" | grep -q 'name="roleforge-build" content="20260715-4"'; then
+              index_live=true
+            fi
+            if [ "$live" = true ] && [ "$index_live" = true ]; then
+              break
+            fi
+            sleep 15
+          done
+
+          python - <<PY
+          import json
+          from pathlib import Path
+          Path('live-site-status.json').write_text(json.dumps({
+            'url': 'https://russelldudek.github.io/servicelink/',
+            'expected_build': '20260715-4',
+            'site_version_live': ${live},
+            'index_build_marker_live': ${index_live},
+            'attempts': int('${attempts}')
+          }, indent=2) + '\n', encoding='utf-8')
+          PY
+
+      - name: Commit live-site verification
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add live-site-status.json
+          git commit -m "Record live GitHub Pages verification [skip ci]"
+          git push origin HEAD:main
