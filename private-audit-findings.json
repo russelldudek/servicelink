@@ -1,0 +1,8 @@
+{
+  "findings": [
+    {
+      "surface": "text",
+      "path": ".github/workflows/force-pages-refresh.yml"
+    }
+  ]
+}
