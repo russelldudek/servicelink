@@ -1,2 +1,3 @@
 Validate the corrected hero composition, regenerate the three-page 90-day plan, and deploy the audited main branch.
 Retry after separating validation from the Pages environment gate.
+Retry after correcting the recovery-row test selector.
