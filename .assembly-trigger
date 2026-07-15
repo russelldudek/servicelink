@@ -1,0 +1,2 @@
+Assemble the validated candidate campaign from the staged source bundle.
+Retry after isolating workflow files from the publication commit.
