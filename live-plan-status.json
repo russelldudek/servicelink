@@ -1,0 +1,9 @@
+{
+  "url": "https://russelldudek.github.io/servicelink/90-day-plan.html",
+  "expected_build": "20260715-5",
+  "html_build_live": true,
+  "download_only_controls_live": true,
+  "pdf_live": true,
+  "pdf_pages": 3,
+  "attempts": 1
+}
