@@ -22,9 +22,8 @@ try {
     await page.waitForTimeout(900);
 
     const geometry = await page.evaluate(() => {
-      const box = (selector) => {
-        const element = document.querySelector(selector);
-        if (!element) throw new Error(`Missing layout target: ${selector}`);
+      const rectFor = (element, label) => {
+        if (!element) throw new Error(`Missing layout target: ${label}`);
         const rect = element.getBoundingClientRect();
         return {
           top: rect.top,
@@ -36,12 +35,15 @@ try {
         };
       };
 
+      const recoveryRows = document.querySelectorAll('.deed-row');
+      const recoveryRow = recoveryRows[recoveryRows.length - 1];
+
       return {
-        documentCard: box('.title-document'),
-        recoveryRow: box('.deed-row:last-of-type'),
-        seal: box('.clear-seal'),
-        caption: box('.scene-caption'),
-        nextSection: box('.company-moment'),
+        documentCard: rectFor(document.querySelector('.title-document'), '.title-document'),
+        recoveryRow: rectFor(recoveryRow, 'final .deed-row'),
+        seal: rectFor(document.querySelector('.clear-seal'), '.clear-seal'),
+        caption: rectFor(document.querySelector('.scene-caption'), '.scene-caption'),
+        nextSection: rectFor(document.querySelector('.company-moment'), '.company-moment'),
         viewportWidth: window.innerWidth,
         scrollWidth: document.documentElement.scrollWidth
       };
