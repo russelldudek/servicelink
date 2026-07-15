@@ -31,7 +31,7 @@ jobs:
             if printf '%s' "$version_body" | grep -q '"build": "20260715-4"'; then
               live=true
             fi
-            if printf '%s' "$index_body" | grep -q 'name="roleforge-build" content="20260715-4"'; then
+            if printf '%s' "$index_body" | grep -q 'name="candidate-build" content="20260715-4"'; then
               index_live=true
             fi
             if [ "$live" = true ] && [ "$index_live" = true ]; then
