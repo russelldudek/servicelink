@@ -41,7 +41,7 @@ jobs:
             stamp="${GITHUB_RUN_ID}-${i}-$(date +%s)"
             html="$(curl -fsSL --retry 2 --connect-timeout 10 "${base}/90-day-plan.html?check=${stamp}" 2>/dev/null || true)"
 
-            if printf '%s' "$html" | grep -q "name=\"roleforge-build\" content=\"${expected}\"" \
+            if printf '%s' "$html" | grep -q "name=\"candidate-build\" content=\"${expected}\"" \
               && printf '%s' "$html" | grep -q "plan.css?v=${expected}" \
               && [ "$(printf '%s' "$html" | grep -o 'document-sheet plan-sheet' | wc -l | tr -d ' ')" = '3' ]; then
               html_live=true
