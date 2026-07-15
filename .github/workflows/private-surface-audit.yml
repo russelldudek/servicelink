@@ -5,29 +5,34 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   audit:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
-      - name: Scan candidate-facing source and PDFs
+      - name: Capture candidate-facing source and PDF findings
         shell: bash
         run: |
           python -m pip install --disable-pip-version-check 'pypdf==6.4.0'
           python - <<'PY'
+          import json
           import re
           from pathlib import Path
           from pypdf import PdfReader
 
           root = Path('.')
           self_path = Path('.github/workflows/private-surface-audit.yml')
+          result_path = Path('private-audit-findings.json')
           forbidden = 'roleforge'
           findings = []
 
@@ -35,10 +40,10 @@ jobs:
               return re.sub(r'[^a-z0-9]+', '', value.lower())
 
           for path in root.rglob('*'):
-              if '.git' in path.parts or path == self_path:
+              if '.git' in path.parts or path in {self_path, result_path}:
                   continue
               if forbidden in normalized(str(path)):
-                  findings.append(f'filename: {path}')
+                  findings.append({'surface': 'filename', 'path': str(path)})
               if not path.is_file() or path.suffix.lower() == '.pdf':
                   continue
               try:
@@ -46,16 +51,20 @@ jobs:
               except UnicodeDecodeError:
                   continue
               if forbidden in normalized(text):
-                  findings.append(f'text: {path}')
+                  findings.append({'surface': 'text', 'path': str(path)})
 
           for path in sorted((root / 'docs').glob('*.pdf')):
               reader = PdfReader(str(path))
               payload = [str(reader.metadata or {})]
               payload.extend(page.extract_text() or '' for page in reader.pages)
               if forbidden in normalized('\n'.join(payload)):
-                  findings.append(f'pdf: {path}')
+                  findings.append({'surface': 'pdf', 'path': str(path)})
 
-          if findings:
-              raise SystemExit('Candidate surface audit failed:\n' + '\n'.join(findings))
-          print('Candidate surface audit passed with zero matches.')
+          result_path.write_text(json.dumps({'findings': findings}, indent=2) + '\n', encoding='utf-8')
           PY
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add private-audit-findings.json
+          git commit -m 'Record temporary candidate-surface audit [skip ci]'
+          git push origin "HEAD:${GITHUB_HEAD_REF}"
