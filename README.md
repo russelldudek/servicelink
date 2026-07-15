@@ -30,3 +30,5 @@ Research uses current official ServiceLink pages for About, Lenders, Title, Clos
 ## Independence
 
 This is an independent candidate work product by Russell Dudek. It is not affiliated with or endorsed by ServiceLink.
+
+The complete static campaign is assembled and validated through the repository's publication workflow.
